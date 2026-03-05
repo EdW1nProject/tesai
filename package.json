@@ -1,0 +1,11 @@
+{
+  "name": "my-ai-chatbot",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "serve public",
+    "vercel-build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}
