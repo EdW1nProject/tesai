@@ -177,61 +177,67 @@
             line-height: 1.6;
         }
 
-        /* === ANIMASI LOADING BUKU === */
+        /* === ANIMASI LOADING BUKU YANG DIPERBAIKI === */
         .book-loader {
-            width: 70px;
-            height: 45px;
             position: relative;
+            width: 70px;
+            height: 50px;
             margin: 0 auto 25px auto;
-            perspective: 300px; /* Memberikan efek 3D saat halaman diputar */
+            perspective: 300px; /* Efek kedalaman 3D */
+            transform-style: preserve-3d;
+        }
+
+        /* Bagian Cover (Kiri dan Kanan) */
+        .book-loader .left-cover,
+        .book-loader .right-cover,
+        .book-loader .page {
+            position: absolute;
+            top: 0;
+            width: 35px; /* Setengah dari total lebar buku */
+            height: 100%;
+            border: 4px solid var(--primary);
+            background-color: #fff;
+            box-sizing: border-box;
         }
 
         .book-loader .left-cover {
-            position: absolute;
-            width: 35px;
-            height: 45px;
-            background: #fff;
-            border: 4px solid var(--primary);
+            left: 0;
             border-right: none;
             border-radius: 6px 0 0 6px;
-            left: 0;
-            box-sizing: border-box;
-            box-shadow: inset 4px 0 8px rgba(0,0,0,0.05);
         }
 
-        .book-loader .page {
-            position: absolute;
-            width: 35px;
-            height: 45px;
-            background: #fff;
-            border: 4px solid var(--primary);
-            border-left: 2px solid var(--primary);
-            border-radius: 0 6px 6px 0;
+        .book-loader .right-cover {
             right: 0;
-            transform-origin: left center; /* Titik putar di tengah buku */
-            animation: flipPage 1.6s linear infinite;
-            box-sizing: border-box;
-            box-shadow: inset -4px 0 8px rgba(0,0,0,0.05);
+            border-left: none;
+            border-radius: 0 6px 6px 0;
         }
 
-        /* Delay berurutan agar halamannya terlihat seperti dibalik satu per satu */
-        .book-loader .page:nth-child(2) { animation-delay: 0.4s; }
-        .book-loader .page:nth-child(3) { animation-delay: 0.8s; }
-        .book-loader .page:nth-child(4) { animation-delay: 1.2s; }
+        /* Bagian Halaman yang Membalik */
+        .book-loader .page {
+            right: 0;
+            border-left: none;
+            border-radius: 0 6px 6px 0;
+            transform-origin: left center; /* Berputar dari poros tengah buku */
+            animation: flipPage 1.5s infinite linear;
+            z-index: 2;
+        }
+
+        /* Delay berurutan untuk efek 3 halaman yang membalik */
+        .book-loader .page.p1 { animation-delay: 0s; }
+        .book-loader .page.p2 { animation-delay: 0.5s; }
+        .book-loader .page.p3 { animation-delay: 1s; }
 
         @keyframes flipPage {
-            0% { 
-                transform: rotateY(0deg); 
-                z-index: 10; 
-                background: #fff;
+            0% {
+                transform: rotateY(0deg);
+                background-color: #fff;
             }
-            50% { 
-                background: var(--bg-body); /* Efek bayangan saat halaman berdiri */
+            50% {
+                background-color: var(--bg-body); /* Memberi bayangan agar terlihat nyata di tengah putaran */
             }
-            100% { 
-                transform: rotateY(-180deg); 
-                z-index: 1; 
-                background: #fff;
+            100% {
+                transform: rotateY(-180deg);
+                background-color: #fff;
             }
         }
 
@@ -274,12 +280,13 @@
                 <div class="status-box">
                     <div class="book-loader">
                         <div class="left-cover"></div>
-                        <div class="page"></div>
-                        <div class="page"></div>
-                        <div class="page"></div>
+                        <div class="right-cover"></div>
+                        <div class="page p1"></div>
+                        <div class="page p2"></div>
+                        <div class="page p3"></div>
                     </div>
                     <strong>Sedang Membaca Kamus...</strong><br>
-                    Mengunduh dan merapikan 140.000+ kata. Harap tunggu sebentar.
+                    Mengunduh dan merapikan ratusan ribu kata. Harap tunggu sebentar.
                 </div>
 
             </div>
@@ -304,6 +311,9 @@
             loadingOverlay.style.display = 'block';
 
             try {
+                // Catat waktu mulai agar kita bisa menghitung lama koneksi
+                const waktuMulai = Date.now();
+
                 const penampungData = await Promise.all(
                     SUMBER_DATABASE.map(url => fetch(url).then(res => res.text()))
                 );
@@ -323,6 +333,15 @@
                 });
 
                 dbKata = [...new Set(semuaKataGabungan)].sort();
+
+                // Hitung berapa lama proses download memakan waktu
+                const waktuSelesai = Date.now() - waktuMulai;
+                const JEDA_MINIMAL = 1500; // Minimal animasi tampil selama 1.5 detik (1500ms)
+
+                // Jika internet terlalu cepat (kurang dari 1.5 detik), tahan sebentar agar animasi terlihat
+                if (waktuSelesai < JEDA_MINIMAL) {
+                    await new Promise(resolve => setTimeout(resolve, JEDA_MINIMAL - waktuSelesai));
+                }
 
                 inputAwalan.disabled = false;
                 inputAkhiran.disabled = false;
