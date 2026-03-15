@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kamus Pintar - Pencarian Awalan & Akhiran (Auto KBBI)</title>
+    <title>Kamus Pintar - Pencarian Awalan & Akhiran (1 Kata Saja)</title>
     <style>
         /* === TEMA WARNA & FONT === */
         :root {
@@ -155,17 +155,18 @@
             box-shadow: var(--shadow-sm);
             text-align: center;
             font-weight: 600;
-            font-size: 1.5rem; /* Ukuran font diperbesar karena hanya tampil 1 */
-            color: var(--primary); /* Warna difokuskan ke warna utama */
-            border: 2px solid var(--primary-light);
+            font-size: 1.1rem; /* Dikembalikan ke ukuran normal */
+            color: var(--text-main);
+            border: 1px solid var(--border);
             transition: all 0.3s ease;
             cursor: default;
-            grid-column: 1 / -1; /* Membuat kartu memenuhi lebar penuh */
         }
 
         .word-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+            color: var(--primary);
         }
 
         .status-box {
@@ -208,7 +209,7 @@
     <div class="container">
         <div class="header">
             <h1>📖 Filter Kamus KBBI</h1>
-            <p>Mencari dari <b>+112.000</b> kata Bahasa Indonesia</p>
+            <p>Mencari kata tunggal dari <b>+112.000</b> data Bahasa Indonesia</p>
         </div>
 
         <div class="search-box">
@@ -285,9 +286,15 @@
             const akhiran = inputAkhiran.value.toLowerCase().trim();
 
             const hasilFilter = dbKata.filter(kata => {
+                // --- BAGIAN YANG DIUBAH: Cek apakah mengandung spasi ---
+                // Jika mengandung spasi (index >= 0), berarti itu 2 kata atau lebih, maka tolak (false)
+                const isKataTunggal = kata.indexOf(' ') === -1; 
+
                 const cocokAwalan = awalan === "" || kata.startsWith(awalan);
                 const cocokAkhiran = akhiran === "" || kata.endsWith(akhiran);
-                return cocokAwalan && cocokAkhiran;
+                
+                // Harus memenuhi ketiga syarat: kata tunggal AND cocok awalan AND cocok akhiran
+                return isKataTunggal && cocokAwalan && cocokAkhiran;
             });
 
             tampilkanKeLayar(hasilFilter);
@@ -296,8 +303,8 @@
         function tampilkanKeLayar(daftarKata) {
             wadahGrid.innerHTML = "";
             
-            // --- BAGIAN YANG DIUBAH: BATAS MAKSIMAL MENJADI 1 ---
-            const MAKSIMAL_TAMPIL = 1; 
+            // --- BAGIAN YANG DIUBAH: Dikembalikan menjadi 200 agar tampil banyak ---
+            const MAKSIMAL_TAMPIL = 200; 
             const totalDitemukan = daftarKata.length;
 
             if (totalDitemukan === 0) {
@@ -305,23 +312,22 @@
                 wadahGrid.innerHTML = `
                     <div class="status-box">
                         <strong>Oops! 🕵️</strong><br>
-                        Tidak ada kata dalam KBBI yang cocok dengan kombinasi awalan dan akhiran tersebut.
+                        Tidak ada kata tunggal yang cocok dengan kombinasi tersebut.
                     </div>
                 `;
                 return;
             }
 
-            // Atur teks informasi agar pengguna tahu ada berapa total kata asli yang cocok
             if (totalDitemukan > MAKSIMAL_TAMPIL) {
-                teksJumlahKata.textContent = `Ditemukan ${totalDitemukan} kata (Tampil 1)`;
+                teksJumlahKata.textContent = `${totalDitemukan} kata (Tampil ${MAKSIMAL_TAMPIL})`;
             } else {
                 teksJumlahKata.textContent = `${totalDitemukan} kata`;
             }
 
-            // Potong array (slice) hanya untuk dirender 1 kata saja
+            // Potong array agar tidak membuat browser macet
             const kataYangDitampilkan = daftarKata.slice(0, MAKSIMAL_TAMPIL);
 
-            // Buat elemen ke HTML
+            // Tampilkan kembali ke bentuk kotak-kotak banyak
             kataYangDitampilkan.forEach(kata => {
                 const elemenKartu = document.createElement('div');
                 elemenKartu.className = 'word-card';
