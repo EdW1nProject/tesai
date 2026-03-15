@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kamus Pintar - Pencarian Awalan & Akhiran</title>
+    <title>Kamus Pintar - Pencarian Awalan & Akhiran (Auto KBBI)</title>
     <style>
         /* === TEMA WARNA & FONT === */
         :root {
@@ -38,7 +38,6 @@
             margin: 50px auto;
         }
 
-        /* === HEADER === */
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -69,6 +68,20 @@
             margin-bottom: 40px;
             flex-wrap: wrap;
             border: 1px solid rgba(255,255,255,0.5);
+            position: relative;
+        }
+
+        /* Overlay saat loading agar input tidak bisa diklik */
+        .loading-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255,255,255,0.7);
+            border-radius: 20px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none; /* Disembunyikan secara default */
         }
 
         .input-group {
@@ -102,10 +115,6 @@
             border-color: var(--primary);
             background-color: #fff;
             box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
-        }
-
-        .input-group input::placeholder {
-            color: #94a3b8;
         }
 
         /* === AREA HASIL PENCARIAN === */
@@ -150,7 +159,7 @@
             font-size: 1.1rem;
             color: var(--text-main);
             border: 1px solid var(--border);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             cursor: default;
         }
 
@@ -161,18 +170,35 @@
             color: var(--primary);
         }
 
-        .no-results {
+        /* STATUS / NOTIFIKASI */
+        .status-box {
             grid-column: 1 / -1;
             text-align: center;
-            padding: 50px 20px;
+            padding: 40px 20px;
             color: var(--text-muted);
             background: var(--bg-card);
             border-radius: 16px;
             border: 2px dashed var(--border);
             font-size: 1.1rem;
+            line-height: 1.6;
         }
 
-        /* Responsivitas untuk HP */
+        /* Animasi Loading */
+        .spinner {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin { 
+            0% { transform: rotate(0deg); } 
+            100% { transform: rotate(360deg); } 
+        }
+
         @media (max-width: 600px) {
             .search-box {
                 flex-direction: column;
@@ -185,95 +211,130 @@
 
     <div class="container">
         <div class="header">
-            <h1>📖 Filter Kamus</h1>
-            <p>Temukan kata berdasarkan kombinasi <b>Awalan</b> dan <b>Akhiran</b></p>
+            <h1>📖 Filter Kamus KBBI</h1>
+            <p>Mencari dari <b>+112.000</b> kata Bahasa Indonesia</p>
         </div>
 
         <div class="search-box">
+            <div class="loading-overlay" id="loading-overlay"></div>
+            
             <div class="input-group">
                 <label for="awalan">✨ Masukkan Awalan</label>
-                <input type="text" id="awalan" placeholder="Contoh: me, pe, ber, ter...">
+                <input type="text" id="awalan" placeholder="Contoh: me, pe, ber, ter..." disabled>
             </div>
             <div class="input-group">
                 <label for="akhiran">📌 Masukkan Akhiran</label>
-                <input type="text" id="akhiran" placeholder="Contoh: kan, an, i...">
+                <input type="text" id="akhiran" placeholder="Contoh: kan, an, i..." disabled>
             </div>
         </div>
 
         <div class="results-container">
             <div class="results-header">
-                <h2>Daftar Kata Ditemukan</h2>
+                <h2>Daftar Kata</h2>
                 <span class="word-count" id="word-count">0 kata</span>
             </div>
             <div class="word-grid" id="word-grid">
+                <div class="status-box">
+                    <div class="spinner"></div>
+                    <strong>Sedang Memuat Database...</strong><br>
+                    Mengunduh 100.000+ kata KBBI. Harap tunggu sebentar.
                 </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Database sampel kata-kata bahasa Indonesia
-        // Kamu bisa menambahkan ribuan kata lain ke dalam array ini
-        const dbKata = [
-            // me- / -kan
-            "melakukan", "memberikan", "memakan", "memainkan", "melupakan", "membacakan", "menyanyikan", "menyakitkan", "membagikan", "menyelesaikan", "menggambarkan",
-            // pe- / -an
-            "permainan", "perjalanan", "pertanyaan", "perasaan", "pekerjaan", "pengalaman", "pelajaran", "pemikiran", "pendidikan", "perubahan", "pemandangan",
-            // ke- / -an
-            "kebaikan", "kejahatan", "keindahan", "kehidupan", "kematian", "kemiskinan", "kekayaan", "kesalahan", "kebenaran", "kecantikan", "kesehatan",
-            // ber- / -an
-            "berduaan", "berlarian", "beraturan", "berciuman", "berpelukan", "bermusuhan", "berteman", "berjalan", "berkaitan", "berdekatan",
-            // me- / -i
-            "mencintai", "menyakiti", "menikmati", "memarahi", "menemui", "menjauhi", "mendekati", "mematuhi",
-            // awalan saja
-            "terbaik", "terburuk", "tercantik", "terpintar", "terkaya", "termiskin", "terbesar", "terkecil", "terlama", "tercepat",
-            // kata dasar
-            "makan", "minum", "tidur", "lari", "jalan", "baca", "tulis", "lihat", "dengar", "bicara", "sayang", "cinta"
-        ].sort(); // Di-sort agar berurutan sesuai abjad
+        // Array kosong, akan diisi otomatis dari Internet
+        let dbKata = []; 
 
-        // Mengambil elemen HTML
         const inputAwalan = document.getElementById('awalan');
         const inputAkhiran = document.getElementById('akhiran');
         const wadahGrid = document.getElementById('word-grid');
         const teksJumlahKata = document.getElementById('word-count');
+        const loadingOverlay = document.getElementById('loading-overlay');
 
-        // Fungsi utama untuk menyaring kata
+        // URL Database KBBI Raw dari Repository Open Source (Format Teks/List)
+        const URL_DATABASE = 'https://raw.githubusercontent.com/damzaky/kumpulan-kata-bahasa-indonesia-KBBI/master/list_1.0.0.txt';
+
+        // Fungsi mengambil data dari server GitHub
+        async function ambilDataKBBI() {
+            loadingOverlay.style.display = 'block'; // Tampilkan kunci input
+
+            try {
+                const response = await fetch(URL_DATABASE);
+                if (!response.ok) throw new Error("Gagal mengunduh data");
+                
+                const teksData = await response.text();
+                
+                // Pisahkan per baris menjadi array, bersihkan spasi, lalu buang yang kosong
+                dbKata = teksData.split('\n')
+                                 .map(kata => kata.trim().toLowerCase())
+                                 .filter(kata => kata.length > 0);
+
+                // Buka kunci input
+                inputAwalan.disabled = false;
+                inputAkhiran.disabled = false;
+                loadingOverlay.style.display = 'none';
+
+                // Jalankan filter perdana
+                saringKata();
+
+            } catch (error) {
+                wadahGrid.innerHTML = `
+                    <div class="status-box" style="color: #ef4444; border-color: #ef4444;">
+                        <strong>❌ Koneksi Gagal!</strong><br>
+                        Gagal mengunduh database KBBI. Pastikan koneksi internet kamu aktif lalu muat ulang (refresh) halaman.
+                    </div>
+                `;
+                loadingOverlay.style.display = 'none';
+            }
+        }
+
+        // Fungsi menyaring kata
         function saringKata() {
-            // Ambil teks dari input, ubah ke huruf kecil, hilangkan spasi berlebih
             const awalan = inputAwalan.value.toLowerCase().trim();
             const akhiran = inputAkhiran.value.toLowerCase().trim();
 
-            // Filter database
+            // Filter jutaan/ribuan array
             const hasilFilter = dbKata.filter(kata => {
                 const cocokAwalan = awalan === "" || kata.startsWith(awalan);
                 const cocokAkhiran = akhiran === "" || kata.endsWith(akhiran);
-                
-                // Kata harus cocok dengan awalan DAN akhiran yang diinputkan
                 return cocokAwalan && cocokAkhiran;
             });
 
-            // Tampilkan ke layar
             tampilkanKeLayar(hasilFilter);
         }
 
-        // Fungsi untuk merender HTML dari hasil filter
         function tampilkanKeLayar(daftarKata) {
-            // Bersihkan hasil sebelumnya
             wadahGrid.innerHTML = "";
-            teksJumlahKata.textContent = `${daftarKata.length} kata`;
+            
+            // Batas maksimal render agar HP / Browser tidak macet (lag)
+            const MAKSIMAL_TAMPIL = 200; 
+            const totalDitemukan = daftarKata.length;
 
-            // Jika tidak ada hasil
-            if (daftarKata.length === 0) {
+            if (totalDitemukan === 0) {
+                teksJumlahKata.textContent = `0 kata`;
                 wadahGrid.innerHTML = `
-                    <div class="no-results">
-                        <strong>Oops!</strong><br>
-                        Tidak ada kata yang cocok dengan kombinasi awalan dan akhiran tersebut.
+                    <div class="status-box">
+                        <strong>Oops! 🕵️</strong><br>
+                        Tidak ada kata dalam KBBI yang cocok dengan kombinasi awalan dan akhiran tersebut.
                     </div>
                 `;
                 return;
             }
 
-            // Jika ada hasil, buat kartu untuk setiap kata
-            daftarKata.forEach(kata => {
+            // Atur teks jumlah kata
+            if (totalDitemukan > MAKSIMAL_TAMPIL) {
+                teksJumlahKata.textContent = `${totalDitemukan} kata (Tampil ${MAKSIMAL_TAMPIL})`;
+            } else {
+                teksJumlahKata.textContent = `${totalDitemukan} kata`;
+            }
+
+            // Potong array (slice) hanya untuk dirender
+            const kataYangDitampilkan = daftarKata.slice(0, MAKSIMAL_TAMPIL);
+
+            // Buat elemen ke HTML
+            kataYangDitampilkan.forEach(kata => {
                 const elemenKartu = document.createElement('div');
                 elemenKartu.className = 'word-card';
                 elemenKartu.textContent = kata;
@@ -281,12 +342,12 @@
             });
         }
 
-        // Jalankan fungsi saringKata setiap kali pengguna mengetik
+        // Panggil fungsi saat ngetik
         inputAwalan.addEventListener('input', saringKata);
         inputAkhiran.addEventListener('input', saringKata);
 
-        // Panggil sekali di awal untuk menampilkan seluruh kata bawaan
-        saringKata();
+        // Jalankan fetch API begitu halaman pertama dibuka
+        ambilDataKBBI();
     </script>
 </body>
 </html>
