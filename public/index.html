@@ -1,366 +1,292 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<title>Pandan AI</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamus Pintar - Pencarian Awalan & Akhiran</title>
+    <style>
+        /* === TEMA WARNA & FONT === */
+        :root {
+            --primary: #4f46e5; /* Indigo */
+            --primary-light: #818cf8;
+            --bg-body: #f1f5f9; /* Slate 100 */
+            --bg-card: #ffffff;
+            --text-main: #1e293b; /* Slate 800 */
+            --text-muted: #64748b; /* Slate 500 */
+            --border: #e2e8f0; /* Slate 200 */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+        }
 
-<style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-body{
-font-family:'Poppins',sans-serif;
-margin:0;
-background:#0f172a;
-color:#e2e8f0;
-display:flex;
-height:100vh;
-overflow:hidden;
-}
+        /* === LAYOUT UTAMA === */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 50px auto;
+        }
 
-/* SIDEBAR */
+        /* === HEADER === */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
 
-#sidebar{
-width:260px;
-background:#020617;
-border-right:1px solid #1e293b;
-display:flex;
-flex-direction:column;
-}
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
 
-#newChat{
-margin:15px;
-padding:12px;
-background:#38bdf8;
-border:none;
-border-radius:8px;
-font-weight:600;
-cursor:pointer;
-}
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin: 0;
+        }
 
-#chatList{
-flex:1;
-overflow-y:auto;
-padding:10px;
-}
+        /* === KOTAK PENCARIAN === */
+        .search-box {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
 
-.chatItem{
-padding:10px;
-margin-bottom:6px;
-background:#0f172a;
-border-radius:6px;
-cursor:pointer;
-font-size:0.9rem;
-}
+        .input-group {
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-.chatItem:hover{
-background:#1e293b;
-}
+        .input-group label {
+            font-weight: 600;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-/* MAIN */
+        .input-group input {
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            background-color: #f8fafc;
+        }
 
-#main{
-flex:1;
-display:flex;
-flex-direction:column;
-}
+        .input-group input:focus {
+            border-color: var(--primary);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+        }
 
-header{
-text-align:center;
-padding:15px;
-background:#1e293b;
-border-bottom:1px solid #334155;
-}
+        .input-group input::placeholder {
+            color: #94a3b8;
+        }
 
-h1{
-color:#38bdf8;
-margin:0;
-}
+        /* === AREA HASIL PENCARIAN === */
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
 
-/* CHAT AREA */
+        .results-header h2 {
+            font-size: 1.2rem;
+            margin: 0;
+            color: var(--text-main);
+        }
 
-#chatArea{
-flex:1;
-padding:20px;
-overflow-y:auto;
-display:flex;
-flex-direction:column;
-}
+        .word-count {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
 
-.message{
-margin:8px 0;
-padding:12px 16px;
-border-radius:12px;
-max-width:70%;
-white-space:pre-wrap;
-}
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
 
-.user{
-background:#38bdf8;
-color:#0f172a;
-align-self:flex-end;
-}
+        /* === KARTU KATA === */
+        .word-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+        }
 
-.ai{
-background:#1e293b;
-border:1px solid #334155;
-}
+        .word-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
 
-/* INPUT */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 2px dashed var(--border);
+            font-size: 1.1rem;
+        }
 
-#inputArea{
-display:flex;
-padding:15px;
-background:#1e293b;
-border-top:1px solid #334155;
-}
-
-#userInput{
-flex:1;
-padding:12px;
-border-radius:8px;
-border:none;
-background:#0f172a;
-color:white;
-margin-right:10px;
-}
-
-#sendButton{
-padding:12px 20px;
-border-radius:8px;
-border:none;
-background:#38bdf8;
-cursor:pointer;
-font-weight:600;
-}
-
-/* LOADER */
-
-#loader{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#0f172a;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-z-index:9999;
-}
-
-.spinner{
-width:60px;
-height:60px;
-border:6px solid #334155;
-border-top:6px solid #38bdf8;
-border-radius:50%;
-animation:spin 1s linear infinite;
-}
-
-@keyframes spin{
-0%{transform:rotate(0deg)}
-100%{transform:rotate(360deg)}
-}
-
-</style>
+        /* Responsivitas untuk HP */
+        @media (max-width: 600px) {
+            .search-box {
+                flex-direction: column;
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<div id="loader">
-<div class="spinner"></div>
-<p>Pandan AI...</p>
-</div>
-
-<!-- SIDEBAR -->
-
-<div id="sidebar">
-
-<button id="newChat">+ New Chat</button>
-
-<div id="chatList"></div>
-
-</div>
-
-<!-- MAIN -->
-
-<div id="main">
-
-<header>
-<h1>Pandan AI</h1>
-</header>
-
-<div id="chatArea"></div>
-
-<div id="inputArea">
-<input type="text" id="userInput" placeholder="Ketik pesan...">
-<button id="sendButton">Kirim</button>
-</div>
-
-</div>
-
-<script>
-
-const api={
-url:"https://api.termai.cc",
-key:"Bell409"
-};
-
-let chats=JSON.parse(localStorage.getItem("pandan_chats"))||{};
-let currentChatId=null;
-
-/* LOADER */
-
-window.onload=()=>{
-setTimeout(()=>{
-document.getElementById("loader").style.display="none";
-},1200)
-
-renderChatList()
-}
-
-/* NEW CHAT */
-
-document.getElementById("newChat").onclick=()=>{
-currentChatId="chat_"+Date.now()
-
-chats[currentChatId]=[]
-
-saveChats()
-
-loadChat(currentChatId)
-
-renderChatList()
-}
-
-/* SAVE */
-
-function saveChats(){
-localStorage.setItem("pandan_chats",JSON.stringify(chats))
-}
-
-/* LOAD CHAT */
-
-function loadChat(id){
-
-currentChatId=id
-
-document.getElementById("chatArea").innerHTML=""
-
-chats[id].forEach(m=>{
-displayMessage(m.text,m.type)
-})
-
-}
-
-/* SIDEBAR */
-
-function renderChatList(){
-
-const list=document.getElementById("chatList")
-list.innerHTML=""
-
-for(const id in chats){
-
-const div=document.createElement("div")
-div.className="chatItem"
-
-let preview=chats[id][0]?.text||"Chat Baru"
-
-div.textContent=preview.slice(0,30)
-
-div.onclick=()=>loadChat(id)
-
-list.appendChild(div)
-
-}
-
-}
-
-/* SEND MESSAGE */
-
-document.getElementById("sendButton").onclick=sendMessage
-
-document.getElementById("userInput").addEventListener("keypress",e=>{
-if(e.key==="Enter")sendMessage()
-})
-
-async function sendMessage(){
-
-const input=document.getElementById("userInput")
-const text=input.value.trim()
-
-if(!text)return
-
-if(!currentChatId){
-document.getElementById("newChat").click()
-}
-
-displayMessage(text,"user")
-
-saveMessage(text,"user")
-
-input.value=""
-
-const typing=displayMessage("AI sedang mengetik...","ai")
-
-try{
-
-const res=await fetch(`${api.url}/api/chat/bard?query=${encodeURIComponent(text)}&key=${api.key}`)
-
-const json=await res.json()
-
-typing.remove()
-
-const reply=json.chatUi||"AI tidak memberi jawaban."
-
-displayMessage(reply,"ai")
-
-saveMessage(reply,"ai")
-
-}catch{
-
-typing.remove()
-
-displayMessage("Gagal terhubung ke AI","ai")
-
-}
-
-}
-
-/* DISPLAY */
-
-function displayMessage(text,type){
-
-const chatArea=document.getElementById("chatArea")
-
-const div=document.createElement("div")
-
-div.className="message "+type
-
-div.textContent=text
-
-chatArea.appendChild(div)
-
-chatArea.scrollTop=chatArea.scrollHeight
-
-return div
-
-}
-
-/* SAVE MESSAGE */
-
-function saveMessage(text,type){
-
-chats[currentChatId].push({text,type})
-
-saveChats()
-
-}
-
-</script>
-
+    <div class="container">
+        <div class="header">
+            <h1>📖 Filter Kamus</h1>
+            <p>Temukan kata berdasarkan kombinasi <b>Awalan</b> dan <b>Akhiran</b></p>
+        </div>
+
+        <div class="search-box">
+            <div class="input-group">
+                <label for="awalan">✨ Masukkan Awalan</label>
+                <input type="text" id="awalan" placeholder="Contoh: me, pe, ber, ter...">
+            </div>
+            <div class="input-group">
+                <label for="akhiran">📌 Masukkan Akhiran</label>
+                <input type="text" id="akhiran" placeholder="Contoh: kan, an, i...">
+            </div>
+        </div>
+
+        <div class="results-container">
+            <div class="results-header">
+                <h2>Daftar Kata Ditemukan</h2>
+                <span class="word-count" id="word-count">0 kata</span>
+            </div>
+            <div class="word-grid" id="word-grid">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Database sampel kata-kata bahasa Indonesia
+        // Kamu bisa menambahkan ribuan kata lain ke dalam array ini
+        const dbKata = [
+            // me- / -kan
+            "melakukan", "memberikan", "memakan", "memainkan", "melupakan", "membacakan", "menyanyikan", "menyakitkan", "membagikan", "menyelesaikan", "menggambarkan",
+            // pe- / -an
+            "permainan", "perjalanan", "pertanyaan", "perasaan", "pekerjaan", "pengalaman", "pelajaran", "pemikiran", "pendidikan", "perubahan", "pemandangan",
+            // ke- / -an
+            "kebaikan", "kejahatan", "keindahan", "kehidupan", "kematian", "kemiskinan", "kekayaan", "kesalahan", "kebenaran", "kecantikan", "kesehatan",
+            // ber- / -an
+            "berduaan", "berlarian", "beraturan", "berciuman", "berpelukan", "bermusuhan", "berteman", "berjalan", "berkaitan", "berdekatan",
+            // me- / -i
+            "mencintai", "menyakiti", "menikmati", "memarahi", "menemui", "menjauhi", "mendekati", "mematuhi",
+            // awalan saja
+            "terbaik", "terburuk", "tercantik", "terpintar", "terkaya", "termiskin", "terbesar", "terkecil", "terlama", "tercepat",
+            // kata dasar
+            "makan", "minum", "tidur", "lari", "jalan", "baca", "tulis", "lihat", "dengar", "bicara", "sayang", "cinta"
+        ].sort(); // Di-sort agar berurutan sesuai abjad
+
+        // Mengambil elemen HTML
+        const inputAwalan = document.getElementById('awalan');
+        const inputAkhiran = document.getElementById('akhiran');
+        const wadahGrid = document.getElementById('word-grid');
+        const teksJumlahKata = document.getElementById('word-count');
+
+        // Fungsi utama untuk menyaring kata
+        function saringKata() {
+            // Ambil teks dari input, ubah ke huruf kecil, hilangkan spasi berlebih
+            const awalan = inputAwalan.value.toLowerCase().trim();
+            const akhiran = inputAkhiran.value.toLowerCase().trim();
+
+            // Filter database
+            const hasilFilter = dbKata.filter(kata => {
+                const cocokAwalan = awalan === "" || kata.startsWith(awalan);
+                const cocokAkhiran = akhiran === "" || kata.endsWith(akhiran);
+                
+                // Kata harus cocok dengan awalan DAN akhiran yang diinputkan
+                return cocokAwalan && cocokAkhiran;
+            });
+
+            // Tampilkan ke layar
+            tampilkanKeLayar(hasilFilter);
+        }
+
+        // Fungsi untuk merender HTML dari hasil filter
+        function tampilkanKeLayar(daftarKata) {
+            // Bersihkan hasil sebelumnya
+            wadahGrid.innerHTML = "";
+            teksJumlahKata.textContent = `${daftarKata.length} kata`;
+
+            // Jika tidak ada hasil
+            if (daftarKata.length === 0) {
+                wadahGrid.innerHTML = `
+                    <div class="no-results">
+                        <strong>Oops!</strong><br>
+                        Tidak ada kata yang cocok dengan kombinasi awalan dan akhiran tersebut.
+                    </div>
+                `;
+                return;
+            }
+
+            // Jika ada hasil, buat kartu untuk setiap kata
+            daftarKata.forEach(kata => {
+                const elemenKartu = document.createElement('div');
+                elemenKartu.className = 'word-card';
+                elemenKartu.textContent = kata;
+                wadahGrid.appendChild(elemenKartu);
+            });
+        }
+
+        // Jalankan fungsi saringKata setiap kali pengguna mengetik
+        inputAwalan.addEventListener('input', saringKata);
+        inputAkhiran.addEventListener('input', saringKata);
+
+        // Panggil sekali di awal untuk menampilkan seluruh kata bawaan
+        saringKata();
+    </script>
 </body>
 </html>
