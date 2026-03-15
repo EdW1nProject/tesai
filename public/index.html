@@ -7,13 +7,13 @@
     <style>
         /* === TEMA WARNA & FONT === */
         :root {
-            --primary: #4f46e5; /* Indigo */
+            --primary: #4f46e5;
             --primary-light: #818cf8;
-            --bg-body: #f1f5f9; /* Slate 100 */
+            --bg-body: #f1f5f9;
             --bg-card: #ffffff;
-            --text-main: #1e293b; /* Slate 800 */
-            --text-muted: #64748b; /* Slate 500 */
-            --border: #e2e8f0; /* Slate 200 */
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             --shadow-hover: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
@@ -71,7 +71,6 @@
             position: relative;
         }
 
-        /* Overlay saat loading agar input tidak bisa diklik */
         .loading-overlay {
             position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -81,7 +80,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            display: none; /* Disembunyikan secara default */
+            display: none;
         }
 
         .input-group {
@@ -156,21 +155,19 @@
             box-shadow: var(--shadow-sm);
             text-align: center;
             font-weight: 600;
-            font-size: 1.1rem;
-            color: var(--text-main);
-            border: 1px solid var(--border);
+            font-size: 1.5rem; /* Ukuran font diperbesar karena hanya tampil 1 */
+            color: var(--primary); /* Warna difokuskan ke warna utama */
+            border: 2px solid var(--primary-light);
             transition: all 0.3s ease;
             cursor: default;
+            grid-column: 1 / -1; /* Membuat kartu memenuhi lebar penuh */
         }
 
         .word-card:hover {
             transform: translateY(-5px);
             box-shadow: var(--shadow-hover);
-            border-color: var(--primary-light);
-            color: var(--primary);
         }
 
-        /* STATUS / NOTIFIKASI */
         .status-box {
             grid-column: 1 / -1;
             text-align: center;
@@ -183,7 +180,6 @@
             line-height: 1.6;
         }
 
-        /* Animasi Loading */
         .spinner {
             border: 4px solid var(--border);
             border-top: 4px solid var(--primary);
@@ -230,7 +226,7 @@
 
         <div class="results-container">
             <div class="results-header">
-                <h2>Daftar Kata</h2>
+                <h2>Kata Ditemukan</h2>
                 <span class="word-count" id="word-count">0 kata</span>
             </div>
             <div class="word-grid" id="word-grid">
@@ -244,7 +240,6 @@
     </div>
 
     <script>
-        // Array kosong, akan diisi otomatis dari Internet
         let dbKata = []; 
 
         const inputAwalan = document.getElementById('awalan');
@@ -253,12 +248,10 @@
         const teksJumlahKata = document.getElementById('word-count');
         const loadingOverlay = document.getElementById('loading-overlay');
 
-        // URL Database KBBI Raw dari Repository Open Source (Format Teks/List)
         const URL_DATABASE = 'https://raw.githubusercontent.com/damzaky/kumpulan-kata-bahasa-indonesia-KBBI/master/list_1.0.0.txt';
 
-        // Fungsi mengambil data dari server GitHub
         async function ambilDataKBBI() {
-            loadingOverlay.style.display = 'block'; // Tampilkan kunci input
+            loadingOverlay.style.display = 'block';
 
             try {
                 const response = await fetch(URL_DATABASE);
@@ -266,36 +259,31 @@
                 
                 const teksData = await response.text();
                 
-                // Pisahkan per baris menjadi array, bersihkan spasi, lalu buang yang kosong
                 dbKata = teksData.split('\n')
                                  .map(kata => kata.trim().toLowerCase())
                                  .filter(kata => kata.length > 0);
 
-                // Buka kunci input
                 inputAwalan.disabled = false;
                 inputAkhiran.disabled = false;
                 loadingOverlay.style.display = 'none';
 
-                // Jalankan filter perdana
                 saringKata();
 
             } catch (error) {
                 wadahGrid.innerHTML = `
                     <div class="status-box" style="color: #ef4444; border-color: #ef4444;">
                         <strong>❌ Koneksi Gagal!</strong><br>
-                        Gagal mengunduh database KBBI. Pastikan koneksi internet kamu aktif lalu muat ulang (refresh) halaman.
+                        Gagal mengunduh database KBBI. Pastikan koneksi internet kamu aktif lalu muat ulang halaman.
                     </div>
                 `;
                 loadingOverlay.style.display = 'none';
             }
         }
 
-        // Fungsi menyaring kata
         function saringKata() {
             const awalan = inputAwalan.value.toLowerCase().trim();
             const akhiran = inputAkhiran.value.toLowerCase().trim();
 
-            // Filter jutaan/ribuan array
             const hasilFilter = dbKata.filter(kata => {
                 const cocokAwalan = awalan === "" || kata.startsWith(awalan);
                 const cocokAkhiran = akhiran === "" || kata.endsWith(akhiran);
@@ -308,8 +296,8 @@
         function tampilkanKeLayar(daftarKata) {
             wadahGrid.innerHTML = "";
             
-            // Batas maksimal render agar HP / Browser tidak macet (lag)
-            const MAKSIMAL_TAMPIL = 200; 
+            // --- BAGIAN YANG DIUBAH: BATAS MAKSIMAL MENJADI 1 ---
+            const MAKSIMAL_TAMPIL = 1; 
             const totalDitemukan = daftarKata.length;
 
             if (totalDitemukan === 0) {
@@ -323,14 +311,14 @@
                 return;
             }
 
-            // Atur teks jumlah kata
+            // Atur teks informasi agar pengguna tahu ada berapa total kata asli yang cocok
             if (totalDitemukan > MAKSIMAL_TAMPIL) {
-                teksJumlahKata.textContent = `${totalDitemukan} kata (Tampil ${MAKSIMAL_TAMPIL})`;
+                teksJumlahKata.textContent = `Ditemukan ${totalDitemukan} kata (Tampil 1)`;
             } else {
                 teksJumlahKata.textContent = `${totalDitemukan} kata`;
             }
 
-            // Potong array (slice) hanya untuk dirender
+            // Potong array (slice) hanya untuk dirender 1 kata saja
             const kataYangDitampilkan = daftarKata.slice(0, MAKSIMAL_TAMPIL);
 
             // Buat elemen ke HTML
@@ -342,11 +330,9 @@
             });
         }
 
-        // Panggil fungsi saat ngetik
         inputAwalan.addEventListener('input', saringKata);
         inputAkhiran.addEventListener('input', saringKata);
 
-        // Jalankan fetch API begitu halaman pertama dibuka
         ambilDataKBBI();
     </script>
 </body>
