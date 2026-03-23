@@ -3,255 +3,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Interactive CV</title>
+    <title>Curriculum Vitae | Yasin Pandan Wangi</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
-            --primary-color: #6366f1;
-            --secondary-color: #a855f7;
-            --bg-dark: #0f172a;
-            --glass-bg: rgba(255, 255, 255, 0.05);
+            --primary-color: #00d2ff;
+            --secondary-color: #3a7bd5;
+            --bg-dark: #050a18;
+            --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
-            color: #f8fafc;
+            background: #050a18;
+            color: #e2e8f0;
             overflow-x: hidden;
-            line-height: 1.6;
         }
 
-        /* Animated Background Shapes */
-        .bg-blob {
+        /* Premium Gradient Background */
+        .bg-gradient {
             position: fixed;
-            width: 300px;
-            height: 300px;
-            background: var(--primary-color);
-            filter: blur(80px);
-            border-radius: 50%;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 20% 30%, #1e3a8a 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, #5b21b6 0%, transparent 40%);
             z-index: -1;
-            opacity: 0.2;
-            animation: move 20s infinite alternate;
         }
 
-        @keyframes move {
-            from { transform: translate(-10%, -10%); }
-            to { transform: translate(100%, 80%); }
-        }
+        .container { max-width: 900px; margin: 0 auto; padding: 50px 20px; }
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-
-        /* Glassmorphism Header */
+        /* Header Premium */
         header {
             text-align: center;
-            padding: 80px 20px;
+            padding: 60px 30px;
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            margin-bottom: 50px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         .profile-img {
-            width: 150px;
-            height: 150px;
+            width: 140px; height: 140px;
             border-radius: 50%;
-            border: 4px solid var(--primary-color);
+            border: 3px solid var(--primary-color);
+            padding: 5px;
             margin-bottom: 20px;
-            object-fit: cover;
-            transition: transform 0.5s ease;
+            transition: 0.5s;
         }
 
-        .profile-img:hover {
-            transform: scale(1.1) rotate(5deg);
-        }
+        .profile-img:hover { transform: rotate(360deg) scale(1.1); }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; }
-        .typing-text { color: var(--secondary-color); font-weight: 600; font-size: 1.2rem; }
+        h1 { font-size: 2.2rem; letter-spacing: 1px; margin-bottom: 5px; background: linear-gradient(to right, #00d2ff, #9d50bb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        .role { font-size: 1.1rem; color: #94a3b8; margin-bottom: 20px; }
 
-        /* Grid Layout */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
+        /* Grid System */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
 
         .card {
             background: var(--glass-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--glass-border);
-            padding: 30px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            padding: 25px;
+            border-radius: 25px;
+            transition: 0.4s ease;
         }
 
-        .card:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-10px);
-            border-color: var(--primary-color);
+        .card:hover { border-color: var(--primary-color); transform: translateY(-5px); background: rgba(255,255,255,0.06); }
+
+        .card h3 { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; color: var(--primary-color); font-size: 1.2rem; }
+
+        /* Education & Skills Styling */
+        .info-item { margin-bottom: 15px; border-left: 2px solid #334155; padding-left: 15px; position: relative; }
+        .info-item h4 { font-size: 1rem; color: #fff; }
+        .info-item p { font-size: 0.85rem; color: #94a3b8; }
+        
+        .skill-tag {
+            display: inline-block;
+            padding: 5px 12px;
+            background: rgba(0, 210, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 4px;
+            color: #00d2ff;
         }
 
-        .card h3 {
-            display: flex;
+        .btn-action {
+            display: inline-flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 20px;
-            color: var(--primary-color);
-        }
-
-        /* Skills Progress Bar */
-        .skill-item { margin-bottom: 15px; }
-        .skill-info { display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .progress-bg { background: #334155; height: 8px; border-radius: 10px; }
-        .progress-fill { 
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            height: 100%; 
-            border-radius: 10px;
-            width: 0; /* Animated via JS or CSS */
-            transition: width 1.5s ease-in-out;
-        }
-
-        /* Timeline for Experience/Education */
-        .timeline-item {
-            border-left: 2px solid var(--primary-color);
-            padding-left: 20px;
-            padding-bottom: 20px;
-            position: relative;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -7px;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            background: var(--secondary-color);
-            border-radius: 50%;
-        }
-
-        .btn-contact {
-            display: inline-block;
-            margin-top: 30px;
-            padding: 12px 30px;
+            margin-top: 20px;
+            padding: 12px 25px;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             text-decoration: none;
-            border-radius: 50px;
+            border-radius: 30px;
             font-weight: 600;
             transition: 0.3s;
-            box-shadow: 0 10px 20px -5px var(--primary-color);
         }
 
-        .btn-contact:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 25px -5px var(--primary-color);
-        }
+        .btn-action:hover { opacity: 0.9; transform: scale(1.02); }
 
-        footer { text-align: center; margin-top: 50px; opacity: 0.6; font-size: 0.9rem; }
+        footer { text-align: center; margin-top: 60px; padding-bottom: 30px; color: #64748b; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <div class="bg-blob"></div>
+    <div class="bg-gradient"></div>
 
     <div class="container">
-        <header data-aos="zoom-in">
-            <img src="https://via.placeholder.com/150" alt="Foto Profil" class="profile-img">
-            <h1>Nama Anda</h1>
-            <div class="typing-text">Saya seorang <span id="typed"></span></div>
-            <p style="margin-top: 15px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                Web Developer yang antusias menciptakan pengalaman digital yang indah dan fungsional.
+        <header data-aos="fade-down">
+            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yasin" alt="Yasin" class="profile-img">
+            <h1>Yasin Pandan Wangi</h1>
+            <div class="role">Lulusan Teknik Informatika | Web Enthusiast</div>
+            <p style="font-size: 0.9rem; max-width: 500px; margin: 0 auto 20px; color: #cbd5e1;">
+                Semangat tinggi untuk belajar dan berkembang di industri teknologi. Berkomitmen untuk memberikan hasil kerja terbaik melalui dedikasi dan kejujuran.
             </p>
-            <a href="mailto:email@anda.com" class="btn-contact"><i class="fas fa-paper-plane"></i> Hubungi Saya</a>
+            <div class="contact-links">
+                <a href="mailto:yasin@email.com" class="btn-action"><i class="fas fa-envelope"></i> Email Saya</a>
+            </div>
         </header>
 
         <div class="grid">
-            <div class="card" data-aos="fade-up">
-                <h3><i class="fas fa-briefcase"></i> Pengalaman</h3>
-                <div class="timeline-item">
-                    <p><strong>Web Developer Freelance</strong></p>
-                    <small>2024 - Sekarang</small>
-                    <p>Membangun website responsif dan aplikasi KBBI menggunakan JS.</p>
+            <div class="card" data-aos="fade-right">
+                <h3><i class="fas fa-graduation-cap"></i> Pendidikan</h3>
+                <div class="info-item">
+                    <h4>SMK Negeri 2 Karangrayung</h4>
+                    <p>Teknik Komputer & Jaringan / Informatika</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Jl. Karangrayung-Juangi, Grobogan, Jawa Tengah</p>
                 </div>
-                <div class="timeline-item">
-                    <p><strong>Project Magang</strong></p>
-                    <small>2023 - 2024</small>
-                    <p>Membantu optimasi database dan tampilan UI toko online.</p>
+            </div>
+
+            <div class="card" data-aos="fade-left">
+                <h3><i class="fas fa-laptop-code"></i> Fokus & Proyek</h3>
+                <div class="info-item">
+                    <h4>Pengembangan Web Mandiri</h4>
+                    <p>Mempelajari HTML5, CSS3, dan JavaScript Dasar.</p>
+                </div>
+                <div class="info-item">
+                    <h4>Aplikasi Kamus (KBBI)</h4>
+                    <p>Proyek personal untuk mengasah logika pemrograman JavaScript.</p>
+                </div>
+            </div>
+
+            <div class="card" data-aos="fade-up">
+                <h3><i class="fas fa-star"></i> Keahlian Dasar</h3>
+                <div class="skill-group">
+                    <span class="skill-tag">HTML & CSS</span>
+                    <span class="skill-tag">JavaScript Dasar</span>
+                    <span class="skill-tag">Troubleshooting PC</span>
+                    <span class="skill-tag">Instalasi Jaringan</span>
+                    <span class="skill-tag">Microsoft Office</span>
+                    <span class="skill-tag">Cepat Belajar</span>
                 </div>
             </div>
 
             <div class="card" data-aos="fade-up" data-aos-delay="100">
-                <h3><i class="fas fa-code"></i> Keahlian</h3>
-                <div class="skill-item">
-                    <div class="skill-info"><span>HTML/CSS</span><span>90%</span></div>
-                    <div class="progress-bg"><div class="progress-fill" style="width: 90%;"></div></div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info"><span>JavaScript</span><span>85%</span></div>
-                    <div class="progress-bg"><div class="progress-fill" style="width: 85%;"></div></div>
-                </div>
-                <div class="skill-item">
-                    <div class="skill-info"><span>UI/UX Design</span><span>75%</span></div>
-                    <div class="progress-bg"><div class="progress-fill" style="width: 75%;"></div></div>
-                </div>
-            </div>
-
-            <div class="card" data-aos="fade-up" data-aos-delay="200">
-                <h3><i class="fas fa-graduation-cap"></i> Pendidikan</h3>
-                <div class="timeline-item">
-                    <p><strong>Universitas Stikubank (UNISBANK)</strong></p>
-                    <small>Teknik Informatika</small>
-                    <p>Fokus pada pengembangan sistem web dan basis data.</p>
-                </div>
-            </div>
-
-            <div class="card" data-aos="fade-up" data-aos-delay="300">
-                <h3><i class="fas fa-share-alt"></i> Media Sosial</h3>
-                <div style="display: flex; gap: 20px; font-size: 1.5rem;">
-                    <a href="#" style="color: #fff;"><i class="fab fa-github"></i></a>
-                    <a href="#" style="color: #fff;"><i class="fab fa-linkedin"></i></a>
-                    <a href="#" style="color: #fff;"><i class="fab fa-instagram"></i></a>
-                </div>
-                <p style="margin-top: 15px;">Ayo berkolaborasi untuk proyek Anda selanjutnya!</p>
+                <h3><i class="fas fa-address-card"></i> Informasi Kontak</h3>
+                <p style="font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="fas fa-map-pin" style="color: var(--primary-color);"></i> 
+                    Kec. Karangrayung, Kab. Grobogan, Jawa Tengah
+                </p>
+                <p style="font-size: 0.9rem; margin-bottom: 10px;">
+                    <i class="fab fa-whatsapp" style="color: #25d366;"></i> 
+                    +62 8xx-xxxx-xxxx
+                </p>
             </div>
         </div>
 
         <footer>
-            &copy; 2026 Crafted with ❤️ using HTML/CSS
+            &copy; 2026 Yasin Pandan Wangi - Digital Portfolio
         </footer>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
     <script>
-        // Initialize AOS
-        AOS.init({ duration: 1000, once: true });
-
-        // Initialize Typed.js
-        var typed = new Typed('#typed', {
-            strings: ['Web Developer', 'UI Designer', 'Coding Enthusiast', 'Creative Thinker'],
-            typeSpeed: 50,
-            backSpeed: 30,
-            loop: true
-        });
+        AOS.init({ duration: 800, once: true });
     </script>
 </body>
 </html>
