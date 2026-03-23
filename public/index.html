@@ -4,27 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CV Premium | Yasin Pandan Wangi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Unbounded:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
-        /* CORE PREFERENCES - BIRU PREMIUM */
+        /* CORE PREFERENCES - CODER BLUE PREMIUM */
         :root {
-            --bg-deep: #030712; 
-            --primary-blue: #00d2ff;
-            --secondary-blue: #3a7bd5;
-            --glass-base: rgba(15, 23, 42, 0.6);
-            --glass-border: rgba(0, 210, 255, 0.15);
+            --bg-deep: #020617; /* Sangat gelap, nyaris hitam */
+            --primary-blue: #00f0ff; /* Neon cyan */
+            --secondary-blue: #3b82f6;
+            --glass-base: rgba(15, 23, 42, 0.75);
+            --glass-border: rgba(0, 240, 255, 0.15);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             
             /* Responsive Font Sizes */
-            --fs-h1: 2.8rem;
-            --fs-h2: 1.6rem;
-            --fs-h3: 1.2rem;
-            --fs-p: 1.05rem;
-            --fs-small: 0.9rem;
+            --fs-h1: clamp(2rem, 5vw, 3rem);
+            --fs-h2: clamp(1.3rem, 3vw, 1.6rem);
+            --fs-h3: 1.1rem;
+            --fs-p: 1rem;
+            --fs-small: 0.85rem;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -34,164 +34,252 @@
             background-color: var(--bg-deep);
             color: var(--text-primary);
             overflow-x: hidden;
-            line-height: 1.8;
+            line-height: 1.7;
             -webkit-font-smoothing: antialiased;
         }
 
         h1, h2, h3 { font-family: 'Unbounded', sans-serif; font-weight: 700; color: #fff; }
 
-        /* KINETIC BLUE BACKGROUND ANIMATION */
-        .kinetic-bg {
+        /* --- BACKGROUND ANIMATION & CODER GRID --- */
+        .coder-grid {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            background-color: var(--bg-deep);
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px; /* Ukuran kotak-kotak */
+            background-position: center center;
+            animation: grid-move 20s linear infinite;
+        }
+
+        @keyframes grid-move {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(40px); } /* Bergerak halus ke bawah */
+        }
+
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -1;
-            background: 
-                radial-gradient(circle at 15% 50%, rgba(58, 123, 213, 0.15), transparent 40%),
-                radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.12), transparent 40%);
-            animation: pulse-bg 15s infinite alternate ease-in-out;
+            /* Membuat pinggiran gelap agar grid fokus di tengah */
+            background: radial-gradient(circle at 50% 30%, transparent 20%, var(--bg-deep) 100%);
         }
 
-        @keyframes pulse-bg {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.1); opacity: 1; }
+        /* --- LAYOUT UTAMA --- */
+        .main-container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            padding: 50px 20px; 
         }
-
-        .main-container { max-width: 1100px; margin: 0 auto; padding: 60px 20px; }
 
         /* HEADER SECTION */
         header {
-            text-align: center; padding: 80px 30px;
-            background: var(--glass-base); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 40px;
-            margin-bottom: 50px; position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(0, 210, 255, 0.05);
+            text-align: center; 
+            padding: 60px 20px;
+            background: var(--glass-base); 
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); 
+            border-radius: 30px;
+            margin-bottom: 50px; 
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
 
         .profile-img {
-            width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
-            border: 3px solid var(--primary-blue); padding: 5px;
-            background: var(--bg-deep); transition: all 0.5s ease;
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.3);
+            width: 140px; height: 140px; 
+            border-radius: 50%; object-fit: cover;
+            border: 2px solid var(--primary-blue); 
+            padding: 4px;
+            background: var(--bg-deep); 
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
             margin-bottom: 20px;
         }
 
-        .profile-img:hover { transform: scale(1.08) rotate(5deg); box-shadow: 0 0 30px rgba(0, 210, 255, 0.6); }
+        .profile-img:hover { 
+            transform: scale(1.05) rotate(5deg); 
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.5); 
+            border-color: #fff;
+        }
 
         h1 {
-            font-size: var(--fs-h1); letter-spacing: -1px; margin-bottom: 10px;
-            background: linear-gradient(to right, #ffffff, var(--primary-blue));
+            letter-spacing: -1px; margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--primary-blue) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
         .role-badge {
-            display: inline-block; padding: 8px 20px; border-radius: 30px;
-            background: rgba(0, 210, 255, 0.1); border: 1px solid rgba(0, 210, 255, 0.3);
-            color: var(--primary-blue); font-size: var(--fs-small); margin-bottom: 20px;
-            letter-spacing: 1px;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 20px; border-radius: 30px;
+            background: rgba(0, 240, 255, 0.08); 
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            color: var(--primary-blue); font-size: var(--fs-small); 
+            margin-bottom: 25px; font-weight: 500;
         }
 
-        .profile-summary { font-size: var(--fs-p); max-width: 650px; margin: 0 auto 30px; color: var(--text-secondary); }
+        .profile-summary { 
+            font-size: var(--fs-p); max-width: 700px; 
+            margin: 0 auto 30px; color: var(--text-secondary); 
+        }
 
-        /* CV GRID */
-        .cv-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; }
+        /* --- CV GRID SYSTEM --- */
+        .cv-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 25px; 
+            align-items: start;
+        }
         
+        /* Memaksa elemen membentang 2 kolom di PC */
         .card-full { grid-column: 1 / -1; }
 
         .card {
-            background: var(--glass-base); backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border); border-radius: 25px;
-            padding: 35px; transition: all 0.4s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            background: var(--glass-base); 
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border); 
+            border-radius: 24px;
+            padding: 35px; 
+            transition: all 0.3s ease;
+            height: 100%;
         }
 
         .card:hover {
-            border-color: var(--primary-blue); transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 210, 255, 0.15);
+            border-color: var(--primary-blue); 
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
         }
 
         .card h2 {
-            display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
-            font-size: var(--fs-h2); color: var(--primary-blue);
-            padding-bottom: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex; align-items: center; gap: 12px; 
+            margin-bottom: 25px; color: var(--primary-blue);
+            padding-bottom: 15px; 
+            border-bottom: 1px dashed rgba(0, 240, 255, 0.2);
         }
 
-        /* DATA DIRI SPESIFIK */
-        .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        /* --- DATA DIRI SPESIFIK --- */
+        .data-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+        }
         .data-item {
-            background: rgba(255,255,255,0.02); padding: 15px 20px;
-            border-radius: 15px; border: 1px solid rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.02); 
+            padding: 16px; border-radius: 16px; 
+            border: 1px solid rgba(255,255,255,0.03);
             transition: 0.3s;
         }
-        .data-item:hover { background: rgba(0, 210, 255, 0.05); border-color: rgba(0, 210, 255, 0.2); }
-        .data-item span { display: block; font-size: 0.85rem; color: var(--primary-blue); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-        .data-item div { font-size: var(--fs-p); color: #fff; }
-        .data-full { grid-column: 1 / -1; } /* Membentang penuh untuk alamat */
+        .data-item:hover { 
+            background: rgba(0, 240, 255, 0.03); 
+            border-color: rgba(0, 240, 255, 0.3); 
+        }
+        .data-item span { 
+            display: flex; align-items: center; gap: 8px;
+            font-size: var(--fs-small); color: var(--primary-blue); 
+            margin-bottom: 6px; text-transform: uppercase; 
+            letter-spacing: 0.5px; font-weight: 600; 
+        }
+        .data-item div { font-size: var(--fs-p); color: #fff; font-weight: 500; }
+        .data-full { grid-column: 1 / -1; }
 
-        /* INFO BLOCKS */
-        .info-block { margin-bottom: 20px; border-left: 2px solid var(--secondary-blue); padding-left: 20px; }
+        /* --- INFO BLOCKS (Pendidikan & Pengalaman) --- */
+        .info-block { 
+            margin-bottom: 20px; 
+            border-left: 2px solid var(--secondary-blue); 
+            padding-left: 18px; 
+            position: relative;
+        }
+        .info-block::before {
+            content: ''; position: absolute; left: -6px; top: 6px;
+            width: 10px; height: 10px; border-radius: 50%;
+            background: var(--primary-blue);
+            box-shadow: 0 0 10px var(--primary-blue);
+        }
         .info-block:last-child { margin-bottom: 0; }
-        .info-block h3 { font-size: var(--fs-h3); margin-bottom: 5px; color: #fff; }
-        .info-block p { font-size: var(--fs-p); color: var(--text-secondary); margin-bottom: 5px; }
-        .info-meta { font-size: var(--fs-small); color: var(--primary-blue); font-weight: 600; }
+        .info-block h3 { font-size: var(--fs-h3); margin-bottom: 4px; color: #fff; }
+        .info-block p { font-size: var(--fs-small); color: var(--text-secondary); margin-bottom: 4px; line-height: 1.5; }
+        .info-meta { font-size: 0.8rem; color: var(--primary-blue); font-weight: 600; background: rgba(0,240,255,0.1); padding: 2px 8px; border-radius: 4px; display: inline-block; margin-bottom: 8px;}
 
-        /* SKILLS TAGS */
-        .skill-group { display: flex; flex-wrap: wrap; gap: 12px; }
+        /* --- SKILLS TAGS --- */
+        .skill-group { display: flex; flex-wrap: wrap; gap: 10px; }
         .skill-tag {
-            padding: 8px 16px; background: rgba(0, 210, 255, 0.05); border: 1px solid rgba(0, 210, 255, 0.2);
-            border-radius: 20px; font-size: var(--fs-small); color: var(--primary-blue);
-            transition: all 0.3s ease;
+            padding: 8px 14px; 
+            background: rgba(0, 0, 0, 0.3); 
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 8px; font-size: var(--fs-small); 
+            color: var(--text-primary); transition: all 0.2s ease;
         }
-        .skill-tag:hover { background: var(--primary-blue); color: #000; box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3); }
+        .skill-tag:hover { 
+            background: var(--primary-blue); color: #000; 
+            border-color: var(--primary-blue); font-weight: 600;
+        }
 
-        /* BUTTONS */
+        /* --- BUTTONS --- */
         .btn-premium {
-            display: inline-flex; align-items: center; gap: 10px; padding: 12px 30px;
-            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
-            color: #fff; text-decoration: none; border-radius: 50px; font-weight: 600;
-            font-size: var(--fs-p); transition: 0.3s; box-shadow: 0 10px 20px rgba(0, 210, 255, 0.2);
+            display: inline-flex; align-items: center; gap: 10px; 
+            padding: 12px 28px;
+            background: var(--primary-blue);
+            color: #020617; text-decoration: none; border-radius: 50px; 
+            font-weight: 700; font-size: var(--fs-p); 
+            transition: all 0.3s; 
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
         }
-        .btn-premium:hover { transform: scale(1.05); box-shadow: 0 15px 25px rgba(0, 210, 255, 0.4); color: #fff; }
+        .btn-premium:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 25px rgba(0, 240, 255, 0.6); 
+            background: #fff;
+        }
 
         /* FOOTER */
-        footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: var(--fs-small); }
+        footer { 
+            text-align: center; margin-top: 60px; 
+            color: var(--text-secondary); font-size: var(--fs-small); 
+        }
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            :root { --fs-h1: 2rem; --fs-h2: 1.4rem; --fs-h3: 1.1rem; }
+        /* --- RESPONSIVE / TAMPILAN HP --- */
+        @media (max-width: 850px) {
+            .cv-grid { grid-template-columns: 1fr; } /* Berubah jadi 1 kolom di tablet/HP */
+        }
+
+        @media (max-width: 600px) {
             .main-container { padding: 30px 15px; }
-            header { padding: 50px 20px; border-radius: 30px; }
-            .profile-img { width: 120px; height: 120px; }
+            header { padding: 40px 20px; border-radius: 24px; }
+            .profile-img { width: 110px; height: 110px; }
             .card { padding: 25px; border-radius: 20px; }
-            .data-grid { grid-template-columns: 1fr; }
+            .data-grid { grid-template-columns: 1fr; gap: 12px; } /* Data diri 1 kolom di HP */
+            .data-full { grid-column: auto; }
+            .btn-premium { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <div class="kinetic-bg"></div>
+    <div class="coder-grid"></div>
+    <div class="bg-overlay"></div>
 
     <div class="main-container">
         <header data-aos="fade-down" data-aos-duration="1000">
             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Yasin" alt="Yasin Pandan Wangi" class="profile-img">
             <h1>Yasin Pandan Wangi</h1>
-            <div class="role-badge">Teknik Desain Pemodelan dan Informasi Bangunan</div>
+            <div class="role-badge"><i class="fas fa-terminal"></i> Teknik Desain Pemodelan & Informasi Bangunan</div>
             <p class="profile-summary">
                 Lulusan proaktif dengan semangat tinggi untuk belajar dan berkembang di industri teknologi dan desain bangunan. Berkomitmen memberikan hasil terbaik melalui dedikasi, adaptasi yang cepat, dan kejujuran.
             </p>
-            <a href="https://wa.me/6282324542524" class="btn-premium" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi via WhatsApp</a>
+            <a href="https://wa.me/6282324542524" class="btn-premium" target="_blank"><i class="fab fa-whatsapp"></i> Hubungi WhatsApp</a>
         </header>
 
         <div class="cv-grid">
             
             <div class="card card-full" data-aos="fade-up" data-aos-delay="100">
-                <h2><i class="fas fa-address-card card-icon"></i> Data Diri & Kontak</h2>
+                <h2><i class="fas fa-user-circle"></i> Identitas Diri & Kontak</h2>
                 <div class="data-grid">
                     <div class="data-item">
-                        <span><i class="fas fa-user"></i> Nama Lengkap</span>
+                        <span><i class="fas fa-id-badge"></i> Nama Lengkap</span>
                         <div>Yasin Pandan Wangi</div>
                     </div>
                     <div class="data-item">
-                        <span><i class="fas fa-calendar-alt"></i> Usia</span>
+                        <span><i class="fas fa-hourglass-half"></i> Usia</span>
                         <div>22 Tahun</div>
                     </div>
                     <div class="data-item">
@@ -210,16 +298,24 @@
             </div>
 
             <div class="card" data-aos="fade-up" data-aos-delay="200">
-                <h2><i class="fas fa-briefcase card-icon"></i> Pengalaman Kerja</h2>
+                <h2><i class="fas fa-briefcase"></i> Pengalaman Kerja</h2>
                 <div class="info-block">
                     <h3>Fresh Graduate</h3>
                     <span class="info-meta">Entry Level / Non Pengalaman Formal</span>
-                    <p style="margin-top: 10px;">Saat ini berstatus sebagai lulusan memiliki tekad kuat untuk belajar, mudah diarahkan, dan siap berkontribusi penuh secara profesional dengan etos kerja yang tinggi di perusahaan.</p>
+                    <p style="margin-top: 5px;">Saat ini berstatus sebagai lulusan SMK yang memiliki tekad kuat untuk belajar, mudah diarahkan, dan siap berkontribusi penuh secara profesional dengan etos kerja yang tinggi di lingkungan perusahaan.</p>
                 </div>
             </div>
 
             <div class="card" data-aos="fade-up" data-aos-delay="300">
-                <h2><i class="fas fa-graduation-cap card-icon"></i> Pendidikan</h2>
+                <h2><i class="fas fa-code"></i> Fokus & Proyek</h2>
+                <div class="info-block">
+                    <h3>Pengembangan Web Mandiri</h3>
+                    <p>Mempelajari secara otodidak pembuatan antarmuka web menggunakan HTML5, CSS3, dan pemahaman dasar JavaScript untuk menyusun portfolio digital yang interaktif dan modern.</p>
+                </div>
+            </div>
+
+            <div class="card" data-aos="fade-up" data-aos-delay="400">
+                <h2><i class="fas fa-graduation-cap"></i> Pendidikan Formal</h2>
                 <div class="info-block">
                     <h3>SMK Negeri 2 Karangrayung</h3>
                     <p>Teknik DPIB (Desain Pemodelan & Informasi Bangunan)</p>
@@ -234,37 +330,36 @@
                 </div>
             </div>
 
-            <div class="card" data-aos="fade-up" data-aos-delay="400">
-                <h2><i class="fas fa-laptop-code card-icon"></i> Fokus & Proyek</h2>
-                <div class="info-block">
-                    <h3>Pengembangan Web Mandiri</h3>
-                    <p>Mempelajari secara otodidak pembuatan antarmuka web menggunakan HTML5, CSS3, dan pemahaman dasar JavaScript untuk menyusun portfolio digital yang modern.</p>
-                </div>
-            </div>
-
             <div class="card" data-aos="fade-up" data-aos-delay="500">
-                <h2><i class="fas fa-bolt card-icon"></i> Keahlian Dasar</h2>
+                <h2><i class="fas fa-layer-group"></i> Keahlian Dasar</h2>
                 <div class="skill-group">
                     <span class="skill-tag">Desain Bangunan (DPIB)</span>
                     <span class="skill-tag">HTML & CSS</span>
-                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">JavaScript Basic</span>
                     <span class="skill-tag">PC Troubleshooting</span>
                     <span class="skill-tag">Jaringan Komputer</span>
                     <span class="skill-tag">Microsoft Office</span>
-                    <span class="skill-tag">Adaptif & Pekerja Keras</span>
+                    <span class="skill-tag">Adaptif</span>
+                    <span class="skill-tag">Kerja Tim</span>
                 </div>
             </div>
 
         </div>
 
         <footer>
-            &copy; 2026 Yasin Pandan Wangi - Digital Portfolio
+            &copy; 2026 Yasin Pandan Wangi - Portfolio
         </footer>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 800, once: true, offset: 50 });
+        // Inisialisasi animasi scroll
+        AOS.init({ 
+            duration: 800, 
+            once: true, 
+            offset: 30,
+            easing: 'ease-out-cubic'
+        });
     </script>
 </body>
 </html>
